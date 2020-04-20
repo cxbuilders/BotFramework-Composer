@@ -48,7 +48,7 @@ const turtorials = [
   },
 ];
 
-const Home: React.FC<RouteComponentProps> = () => {
+const Home: React.FC<RouteComponentProps> = props => {
   const { state, actions } = useContext(StoreContext);
   const { botName, recentProjects, templateProjects } = state;
   const {
@@ -122,7 +122,18 @@ const Home: React.FC<RouteComponentProps> = () => {
 
   useEffect(() => {
     fetchRecentProjects();
-    fetchTemplates();
+    async function fetchTemplatesAndParseCreateParams() {
+      await fetchTemplates();
+      if (props.location) {
+        const urlParams = new URLSearchParams(props.location.search);
+        const templateId = urlParams.get('templateId');
+        const schema = urlParams.get('schema');
+        if (templateId && schema) {
+          onClickTemplate(templateId);
+        }
+      }
+    }
+    fetchTemplatesAndParseCreateParams();
   }, []);
 
   return (

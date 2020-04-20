@@ -3,6 +3,7 @@
 
 import fs from 'fs';
 
+import axios from 'axios';
 import { autofixReferInDialog } from '@bfc/indexers';
 import { getNewDesigner, FileInfo, Skill } from '@bfc/shared';
 
@@ -180,6 +181,21 @@ export class BotProject {
       diagnostics,
     };
   };
+
+  public async saveSchemaToProject(schemaUrl, pathToSave) {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: schemaUrl,
+        responseType: 'stream',
+      });
+      const pathToSchema = `${pathToSave}/Schemas`;
+      fs.mkdirSync(pathToSchema);
+      response.data.pipe(fs.createWriteStream(`${pathToSchema}/sdk.schema`));
+    } catch (ex) {
+      console.error('Failed to download the schema', ex);
+    }
+  }
 
   public updateBotInfo = async (name: string, description: string) => {
     const mainDialogFile = this.files.find(file => !file.relativePath.includes('/') && file.name.endsWith('.dialog'));
