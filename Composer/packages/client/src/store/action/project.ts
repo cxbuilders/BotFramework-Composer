@@ -11,11 +11,12 @@ import { navTo } from './navigation';
 import settingStorage from './../../utils/dialogSettingStorage';
 import httpClient from './../../utils/httpUtil';
 
-export const setCreationFlowStatus: ActionCreator = ({ dispatch }, creationFlowStatus) => {
+export const setCreationFlowStatus: ActionCreator = ({ dispatch }, creationFlowStatus, creationParams = undefined) => {
   dispatch({
     type: ActionTypes.SET_CREATION_FLOW_STATUS,
     payload: {
       creationFlowStatus,
+      creationParams,
     },
   });
 };
@@ -144,7 +145,8 @@ export const createProject: ActionCreator = async (
   templateId: string,
   name: string,
   description: string,
-  location: string
+  location: string,
+  schemaUrl?: string
 ) => {
   //set storageId = 'default' now. Some other storages will be added later.
   const storageId = 'default';
@@ -155,7 +157,9 @@ export const createProject: ActionCreator = async (
       name,
       description,
       location,
+      schemaUrl,
     };
+
     const response = await httpClient.post(`/projects`, data);
     const files = response.data.files;
     settingStorage.remove(name);

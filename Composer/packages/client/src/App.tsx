@@ -131,7 +131,16 @@ export const App: React.FC = () => {
   const { state, actions } = useContext(StoreContext);
   const [sideBarExpand, setSideBarExpand] = useState(false);
 
-  const { botName, projectId, dialogs, creationFlowStatus, locale, designPageLocation, announcement } = state;
+  const {
+    botName,
+    projectId,
+    dialogs,
+    creationFlowStatus,
+    locale,
+    designPageLocation,
+    announcement,
+    creationParams,
+  } = state;
   const { setCreationFlowStatus } = actions;
   const mapNavItemTo = x => resolveToBasePath(BASEPATH, x);
 
@@ -202,7 +211,11 @@ export const App: React.FC = () => {
           <ErrorBoundary>
             <RequireAuth>
               {creationFlowStatus !== CreationFlowStatus.CLOSE && (
-                <CreationFlow creationFlowStatus={creationFlowStatus} setCreationFlowStatus={setCreationFlowStatus} />
+                <CreationFlow
+                  creationFlowStatus={creationFlowStatus}
+                  setCreationFlowStatus={setCreationFlowStatus}
+                  creationParams={creationParams}
+                />
               )}
               <Routes component={Content} />
             </RequireAuth>

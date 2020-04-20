@@ -22,6 +22,7 @@ interface FormData {
   name: string;
   description: string;
   location: string;
+  schemaUrl: string;
 }
 
 interface FormDataError {
@@ -34,6 +35,7 @@ interface DefineConversationProps {
   onDismiss: () => void;
   onCurrentPathUpdate: (newPath?: string, storageId?: string) => void;
   onGetErrorMessage?: (text: string) => void;
+  creationParams: { [key: string]: string };
 }
 
 const initialFormDataError: FormDataError = {};
@@ -60,7 +62,7 @@ export const DefineConversation: React.FC<DefineConversationProps> = props => {
     return defaultName;
   };
 
-  const initalFormData: FormData = { name: getDefaultName(), description: '', location: '' };
+  const initalFormData: FormData = { name: getDefaultName(), description: '', location: '', schemaUrl: '' };
   const [formData, setFormData] = useState(initalFormData);
   const [formDataErrors, setFormDataErrors] = useState(initialFormDataError);
   const [disable, setDisable] = useState(false);
@@ -110,6 +112,23 @@ export const DefineConversation: React.FC<DefineConversationProps> = props => {
     }
     setFormDataErrors(errors);
   }, [focusedStorageFolder, formData.name]);
+
+  useEffect(() => {
+    if (props.creationParams) {
+      const updatedFormData: FormData = { ...formData };
+      if (props.creationParams.name) {
+        updatedFormData.name = props.creationParams.name;
+      }
+      if (props.creationParams.description) {
+        updatedFormData.description = props.creationParams.description;
+      }
+
+      if (props.creationParams.schemaUrl) {
+        updatedFormData.schemaUrl = props.creationParams.schemaUrl;
+      }
+      setFormData(updatedFormData);
+    }
+  }, [props.creationParams]);
 
   const handleSubmit = e => {
     e.preventDefault();

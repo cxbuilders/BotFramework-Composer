@@ -290,8 +290,9 @@ const setBotLoadErrorMsg: ReducerFunc = (state, error) => {
   return state;
 };
 
-const setCreationFlowStatus: ReducerFunc = (state, { creationFlowStatus }) => {
+const setCreationFlowStatus: ReducerFunc = (state, { creationFlowStatus, creationParams }) => {
   state.creationFlowStatus = creationFlowStatus;
+  state.creationParams = creationParams;
   return state;
 };
 

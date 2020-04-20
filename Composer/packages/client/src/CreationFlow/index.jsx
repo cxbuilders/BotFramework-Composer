@@ -18,7 +18,7 @@ export function CreationFlow(props) {
   const { state, actions } = useContext(StoreContext);
   const [step, setStep] = useState();
   // eslint-disable-next-line react/prop-types
-  const { creationFlowStatus, setCreationFlowStatus } = props;
+  const { creationFlowStatus, setCreationFlowStatus, creationParams } = props;
   const {
     fetchTemplates,
     openBotProject,
@@ -91,7 +91,7 @@ export function CreationFlow(props) {
   };
 
   const handleCreateNew = async formData => {
-    await createProject(templateId || '', formData.name, formData.description, formData.location);
+    await createProject(templateId || '', formData.name, formData.description, formData.location, formData.schemaUrl);
   };
 
   const handleSaveAs = async formData => {
@@ -139,7 +139,12 @@ export function CreationFlow(props) {
     [Steps.DEFINE]: {
       ...DialogCreationCopy.DEFINE_CONVERSATION_OBJECTIVE,
       children: (
-        <DefineConversation onSubmit={handleSubmit} onDismiss={handleDismiss} onCurrentPathUpdate={updateCurrentPath} />
+        <DefineConversation
+          onSubmit={handleSubmit}
+          onDismiss={handleDismiss}
+          onCurrentPathUpdate={updateCurrentPath}
+          creationParams={creationParams}
+        />
       ),
     },
   };

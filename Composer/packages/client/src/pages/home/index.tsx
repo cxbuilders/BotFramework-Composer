@@ -70,9 +70,21 @@ const Home: React.FC<RouteComponentProps> = props => {
     }
   };
 
-  const onClickTemplate = id => {
+  const onClickTemplate = (id: string, urlParams: URLSearchParams) => {
+    const createParams: any = {};
+    if (urlParams.get('schemaUrl')) {
+      createParams.schemaUrl = urlParams.get('schemaUrl');
+    }
+    if (urlParams.get('name')) {
+      createParams.name = urlParams.get('name');
+    }
+
+    if (urlParams.get('description')) {
+      createParams.description = urlParams.get('description');
+    }
+
     saveTemplateId(id);
-    setCreationFlowStatus(CreationFlowStatus.NEW_FROM_TEMPLATE);
+    setCreationFlowStatus(CreationFlowStatus.NEW_FROM_TEMPLATE, createParams);
   };
 
   const addButton = <Icon styles={home.button} iconName="Add" />;
@@ -125,11 +137,11 @@ const Home: React.FC<RouteComponentProps> = props => {
     async function fetchTemplatesAndParseCreateParams() {
       await fetchTemplates();
       if (props.location) {
-        const urlParams = new URLSearchParams(props.location.search);
+        const decoded = decodeURIComponent(props.location.search);
+        const urlParams = new URLSearchParams(decoded);
         const templateId = urlParams.get('templateId');
-        const schema = urlParams.get('schema');
-        if (templateId && schema) {
-          onClickTemplate(templateId);
+        if (templateId) {
+          onClickTemplate(templateId, urlParams);
         }
       }
     }
