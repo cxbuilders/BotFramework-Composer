@@ -19,4 +19,13 @@ describe('Parse URL', () => {
     const urlToNavigate = parseDeepLinkUrl(testString);
     expect(urlToNavigate).toBe('');
   });
+
+  it('should return correct url for create ', () => {
+    const testString =
+      'bfcomposer://create?templateId%3DEchoBot%26name%3DEchobot-11299%26schemaUrl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fbotframework-sdk%2Fmaster%2Fschemas%2Fcomponent%2Fcomponent.schema%26description%3DHello%20desc';
+    const urlToNavigate = parseDeepLinkUrl(testString);
+    expect(urlToNavigate).toBe(
+      'templateId%3DEchoBot%26name%3DEchobot-11299%26schemaUrl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fbotframework-sdk%2Fmaster%2Fschemas%2Fcomponent%2Fcomponent.schema%26description%3DHello%20desc'
+    );
+  });
 });

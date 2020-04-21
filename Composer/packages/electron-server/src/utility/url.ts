@@ -5,7 +5,6 @@ import lowerCase from 'lodash/lowerCase';
 
 export const parseDeepLinkUrl = deeplinkUrl => {
   const convertedUrl = new URL(deeplinkUrl);
-
   const action = lowerCase(convertedUrl.hostname);
   switch (action) {
     case 'open': {
@@ -13,8 +12,11 @@ export const parseDeepLinkUrl = deeplinkUrl => {
       return decodeURIComponent(encodedUrl);
     }
 
-    //TODO: Create API
-    // case 'create':{}
+    case 'create': {
+      const encodedUrl: string = convertedUrl.search;
+      const decoded = decodeURIComponent(encodedUrl);
+      return `${convertedUrl.pathname}?${decoded}`;
+    }
 
     default:
       return '';
