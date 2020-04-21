@@ -50,7 +50,7 @@ const Routes = props => {
             <Skills path="skills/*" />
           </ProjectRouter>
           <CreateTemplateRouter path="/create/*"></CreateTemplateRouter>
-          <Home path="/*" />
+          <Home path="/" />
           <About path="about" />
           <NotFound default />
         </Router>
@@ -88,7 +88,11 @@ const CreateTemplateRouter = props => {
   return (
     <Fragment>
       <Home />
-      <CreationFlow />
+      <Router>
+        <DashboardHome path="/" />
+        <Team path="team" />
+        <Projects path="projects" />
+      </Router>
     </Fragment>
   );
 };
