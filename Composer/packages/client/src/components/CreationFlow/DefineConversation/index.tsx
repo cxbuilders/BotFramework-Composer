@@ -3,17 +3,17 @@
 
 import Path from 'path';
 
-import React, { useState, Fragment, useEffect, useContext } from 'react';
+import get from 'lodash/get';
+import { DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
 import formatMessage from 'format-message';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
 import { Stack, StackItem } from 'office-ui-fabric-react/lib/Stack';
+import React, { useState, Fragment, useEffect, useContext } from 'react';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
-import get from 'lodash/get';
 
 import { LocationSelectContent } from '../LocationBrowser/LocationSelectContent';
 import { styles as wizardStyles } from '../StepWizard/styles';
-import { StoreContext } from '../../store';
+import { StoreContext } from '../../../store';
 
 import { name, description } from './styles';
 const MAXTRYTIMES = 10000;

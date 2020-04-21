@@ -11,7 +11,6 @@ import { data } from './styles';
 import { NotFound } from './components/NotFound';
 import { BASEPATH } from './constants';
 import { StoreContext } from './store';
-import { resolveToBasePath } from './utils/fileUtil';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
 const Home = React.lazy(() => import('./pages/home'));
@@ -22,6 +21,7 @@ const SettingPage = React.lazy(() => import('./pages/setting'));
 const Notifications = React.lazy(() => import('./pages/notifications'));
 const Publish = React.lazy(() => import('./pages/publish'));
 const Skills = React.lazy(() => import('./pages/skills'));
+const CreationFlow = React.lazy(() => import('./components/CreationFlow'));
 
 const Routes = props => {
   return (
@@ -41,16 +41,16 @@ const Routes = props => {
             noThrow
           />
           <Redirect from="/bot/:projectId/publish" to="/bot/:projectId/publish/all" noThrow />
-          <Redirect from="/" to={resolveToBasePath(BASEPATH, 'home')} noThrow />
           <ProjectRouter path="/bot/:projectId">
             <SettingPage path="settings/*" />
             <LUPage path="language-understanding/:dialogId/*" />
             <LGPage path="language-generation/:dialogId/*" />
             <Notifications path="notifications" />
-            <Publish path="pub`lish/:targetName" />
+            <Publish path="publish/:targetName" />
             <Skills path="skills/*" />
           </ProjectRouter>
-          <Home path="home" />
+          <CreateTemplateRouter path="/create/*"></CreateTemplateRouter>
+          <Home path="/*" />
           <About path="about" />
           <NotFound default />
         </Router>
@@ -82,6 +82,15 @@ const ProjectRouter = props => {
   }, []);
 
   return <Fragment>{props.children}</Fragment>;
+};
+
+const CreateTemplateRouter = props => {
+  return (
+    <Fragment>
+      <Home />
+      <CreationFlow />
+    </Fragment>
+  );
 };
 
 export default Routes;

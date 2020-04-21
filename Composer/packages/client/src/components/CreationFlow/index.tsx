@@ -4,21 +4,27 @@
 import Path from 'path';
 
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { navigate } from '@reach/router';
+import { RouteComponentProps } from '@reach/router';
 
-import { CreationFlowStatus, DialogCreationCopy, Steps } from '../constants';
+import { CreationFlowStatus, DialogCreationCopy, Steps } from '../../constants';
+import { StoreContext } from '../../store';
 
 import { CreateOptions } from './CreateOptions/index';
 import { DefineConversation } from './DefineConversation/index';
 import { OpenProject } from './OpenProject';
-import { StoreContext } from './../store';
 import { StepWizard } from './StepWizard/StepWizard';
 
-export function CreationFlow(props) {
+interface CreationFlowProps extends RouteComponentProps<{}> {
+  creationFlowStatus?: CreationFlowStatus;
+  setCreationFlowStatus?: (status) => void;
+  creationParams?: any;
+}
+
+const CreationFlow: React.FC<CreationFlowProps> = props => {
+  console.log('Im inside creation flow');
   const { state, actions } = useContext(StoreContext);
-  const [step, setStep] = useState();
-  // eslint-disable-next-line react/prop-types
   const { creationFlowStatus, setCreationFlowStatus, creationParams } = props;
+  const [step, setStep] = useState(Steps.NONE);
   const {
     fetchTemplates,
     openBotProject,
@@ -40,10 +46,6 @@ export function CreationFlow(props) {
       fetchFolderItemsByPath(storageId, formattedPath);
     }
   }, [storages]);
-
-  useEffect(() => {
-    init();
-  }, [creationFlowStatus]);
 
   const init = () => {
     if (creationFlowStatus !== CreationFlowStatus.CLOSE) {
@@ -71,6 +73,10 @@ export function CreationFlow(props) {
     }
   };
 
+  useEffect(() => {
+    init();
+  }, [creationFlowStatus]);
+
   const updateCurrentPath = async (newPath, storageId) => {
     if (!storageId) {
       storageId = currentStorageId;
@@ -82,8 +88,7 @@ export function CreationFlow(props) {
   };
 
   const handleDismiss = () => {
-    setCreationFlowStatus(CreationFlowStatus.CLOSE);
-    navigate('../');
+    // setCreationFlowStatus(CreationFlowStatus.CLOSE);
   };
 
   const openBot = async botFolder => {
@@ -118,7 +123,6 @@ export function CreationFlow(props) {
 
   const handleCreateNext = data => {
     saveTemplateId(data);
-    navigate(`./template/${templateId}`);
     setStep(Steps.DEFINE);
   };
 
@@ -152,4 +156,6 @@ export function CreationFlow(props) {
   };
 
   return <StepWizard steps={steps} step={step} onDismiss={handleDismiss} />;
-}
+};
+
+export default CreationFlow;

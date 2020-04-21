@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import React from 'react';
 import { Dialog, DialogType } from 'office-ui-fabric-react/lib/Dialog';
+import React from 'react';
 
 import { styles } from './styles';
 

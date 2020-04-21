@@ -18,7 +18,7 @@
     "dist": "node scripts/electronBuilderDist.js",
     "dist:full": "yarn clean && yarn build && yarn copy-templates && yarn run pack && yarn copy-plugins && yarn dist",
     "pack": "node scripts/electronBuilderPack.js",
-    "start": "cross-env NODE_ENV=development electron .",
+    "start": "cross-env electron .",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --quiet --ext .js,.jsx,.ts,.tsx ./src",
     "lint:fix": "yarn lint --fix",

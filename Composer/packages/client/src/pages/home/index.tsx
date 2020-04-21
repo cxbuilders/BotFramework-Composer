@@ -7,12 +7,12 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import formatMessage from 'format-message';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Router } from '@reach/router';
 
 import { StoreContext } from '../../store';
 import { CreationFlowStatus } from '../../constants';
 import { ToolBar } from '../../components/ToolBar/index';
-import { CreationFlow } from '../../CreationFlow';
+import CreationFlow from '../../components/CreationFlow';
 
 import * as home from './styles';
 import { ItemContainer } from './ItemContainer';
@@ -73,7 +73,7 @@ const Home: React.FC<RouteComponentProps> = props => {
     }
   };
 
-  const onClickTemplate = (id: string, urlParams: URLSearchParams) => {
+  const onClickTemplate = (id: string, urlParams?: URLSearchParams) => {
     const createParams: any = {};
     if (urlParams) {
       if (urlParams.get('schemaUrl')) {
@@ -138,30 +138,19 @@ const Home: React.FC<RouteComponentProps> = props => {
 
   useEffect(() => {
     fetchRecentProjects();
-    async function fetchTemplatesAndParseCreateParams() {
-      await fetchTemplates();
-      if (props.location) {
-        const decoded = decodeURIComponent(props.location.search);
-        const urlParams = new URLSearchParams(decoded);
-        const templateId = urlParams.get('templateId');
-        if (templateId) {
-          onClickTemplate(templateId, urlParams);
-        }
-      }
-    }
-    fetchTemplatesAndParseCreateParams();
+    fetchTemplates();
   }, []);
 
   return (
     <div css={home.outline}>
-      {creationFlowStatus !== CreationFlowStatus.CLOSE && (
+      <Router>
         <CreationFlow
           creationFlowStatus={creationFlowStatus}
           setCreationFlowStatus={setCreationFlowStatus}
           creationParams={creationParams}
           path="/create"
         />
-      )}
+      </Router>
       <ToolBar toolbarItems={toolbarItems} />
       <div css={home.page}>
         <div css={home.leftPage}>

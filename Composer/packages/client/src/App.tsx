@@ -129,17 +129,8 @@ export const App: React.FC = () => {
   const { state, actions } = useContext(StoreContext);
   const [sideBarExpand, setSideBarExpand] = useState(false);
 
-  const {
-    botName,
-    projectId,
-    dialogs,
-    creationFlowStatus,
-    locale,
-    designPageLocation,
-    announcement,
-    creationParams,
-  } = state;
-  const { setCreationFlowStatus } = actions;
+  const { botName, projectId, dialogs, locale, designPageLocation, announcement } = state;
+
   const mapNavItemTo = x => resolveToBasePath(BASEPATH, x);
 
   const openedDialogId = designPageLocation.dialogId || dialogs.find(({ isRoot }) => isRoot === true)?.id || 'Main';
