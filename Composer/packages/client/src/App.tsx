@@ -16,10 +16,8 @@ import Routes from './router';
 import { StoreContext } from './store';
 import { main, sideBar, content, divider, globalNav, leftNavBottom, rightPanel, dividerTop } from './styles';
 import { resolveToBasePath } from './utils/fileUtil';
-import { CreationFlow } from './CreationFlow';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { RequireAuth } from './components/RequireAuth';
-import { CreationFlowStatus } from './constants';
 
 initializeIcons(undefined, { disableWarnings: true });
 
@@ -210,13 +208,6 @@ export const App: React.FC = () => {
         <div css={rightPanel}>
           <ErrorBoundary>
             <RequireAuth>
-              {creationFlowStatus !== CreationFlowStatus.CLOSE && (
-                <CreationFlow
-                  creationFlowStatus={creationFlowStatus}
-                  setCreationFlowStatus={setCreationFlowStatus}
-                  creationParams={creationParams}
-                />
-              )}
               <Routes component={Content} />
             </RequireAuth>
           </ErrorBoundary>

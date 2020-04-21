@@ -47,7 +47,7 @@ const Routes = props => {
             <LUPage path="language-understanding/:dialogId/*" />
             <LGPage path="language-generation/:dialogId/*" />
             <Notifications path="notifications" />
-            <Publish path="publish/:targetName" />
+            <Publish path="pub`lish/:targetName" />
             <Skills path="skills/*" />
           </ProjectRouter>
           <Home path="home" />

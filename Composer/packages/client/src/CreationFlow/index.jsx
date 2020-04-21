@@ -4,6 +4,7 @@
 import Path from 'path';
 
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import { navigate } from '@reach/router';
 
 import { CreationFlowStatus, DialogCreationCopy, Steps } from '../constants';
 
@@ -12,7 +13,6 @@ import { DefineConversation } from './DefineConversation/index';
 import { OpenProject } from './OpenProject';
 import { StoreContext } from './../store';
 import { StepWizard } from './StepWizard/StepWizard';
-import { navigateTo } from './../utils/navigation';
 
 export function CreationFlow(props) {
   const { state, actions } = useContext(StoreContext);
@@ -83,6 +83,7 @@ export function CreationFlow(props) {
 
   const handleDismiss = () => {
     setCreationFlowStatus(CreationFlowStatus.CLOSE);
+    navigate('../');
   };
 
   const openBot = async botFolder => {
@@ -117,6 +118,7 @@ export function CreationFlow(props) {
 
   const handleCreateNext = data => {
     saveTemplateId(data);
+    navigate(`./template/${templateId}`);
     setStep(Steps.DEFINE);
   };
 

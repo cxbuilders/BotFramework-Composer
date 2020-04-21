@@ -4,7 +4,7 @@
 import { parseDeepLinkUrl } from '../../src/utility/url';
 
 describe('Parse URL', () => {
-  it('should parse the url to navigate', () => {
+  it('should parse the url for open API', () => {
     const testString =
       'bfcomposer://open?url=bot%2F88524.65932484581%2Fdialogs%2Fdeleteitem%3Fselected%3Dtriggers%5B0%5D%26focused%3Dtriggers%5B0%5D.actions%5B0%5D&test=ab';
     const urlToNavigate = parseDeepLinkUrl(testString);
@@ -20,12 +20,12 @@ describe('Parse URL', () => {
     expect(urlToNavigate).toBe('');
   });
 
-  it('should return correct url for create ', () => {
+  it('should return correct url for create API', () => {
     const testString =
       'bfcomposer://create?templateId%3DEchoBot%26name%3DEchobot-11299%26schemaUrl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fbotframework-sdk%2Fmaster%2Fschemas%2Fcomponent%2Fcomponent.schema%26description%3DHello%20desc';
     const urlToNavigate = parseDeepLinkUrl(testString);
     expect(urlToNavigate).toBe(
-      'templateId%3DEchoBot%26name%3DEchobot-11299%26schemaUrl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fbotframework-sdk%2Fmaster%2Fschemas%2Fcomponent%2Fcomponent.schema%26description%3DHello%20desc'
+      'home/create?templateId%3DEchoBot%26name%3DEchobot-11299%26schemaUrl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fbotframework-sdk%2Fmaster%2Fschemas%2Fcomponent%2Fcomponent.schema%26description%3DHello%20desc'
     );
   });
 });

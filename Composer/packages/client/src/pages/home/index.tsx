@@ -12,11 +12,14 @@ import { RouteComponentProps } from '@reach/router';
 import { StoreContext } from '../../store';
 import { CreationFlowStatus } from '../../constants';
 import { ToolBar } from '../../components/ToolBar/index';
+import { CreationFlow } from '../../CreationFlow';
 
 import * as home from './styles';
 import { ItemContainer } from './ItemContainer';
 import { RecentBotList } from './RecentBotList';
 import { ExampleList } from './ExampleList';
+
+const creationParams = {};
 
 const linksButtom = [
   {
@@ -50,7 +53,7 @@ const turtorials = [
 
 const Home: React.FC<RouteComponentProps> = props => {
   const { state, actions } = useContext(StoreContext);
-  const { botName, recentProjects, templateProjects } = state;
+  const { botName, recentProjects, templateProjects, creationFlowStatus } = state;
   const {
     openBotProject,
     setCreationFlowStatus,
@@ -72,17 +75,18 @@ const Home: React.FC<RouteComponentProps> = props => {
 
   const onClickTemplate = (id: string, urlParams: URLSearchParams) => {
     const createParams: any = {};
-    if (urlParams.get('schemaUrl')) {
-      createParams.schemaUrl = urlParams.get('schemaUrl');
-    }
-    if (urlParams.get('name')) {
-      createParams.name = urlParams.get('name');
-    }
+    if (urlParams) {
+      if (urlParams.get('schemaUrl')) {
+        createParams.schemaUrl = urlParams.get('schemaUrl');
+      }
+      if (urlParams.get('name')) {
+        createParams.name = urlParams.get('name');
+      }
 
-    if (urlParams.get('description')) {
-      createParams.description = urlParams.get('description');
+      if (urlParams.get('description')) {
+        createParams.description = urlParams.get('description');
+      }
     }
-
     saveTemplateId(id);
     setCreationFlowStatus(CreationFlowStatus.NEW_FROM_TEMPLATE, createParams);
   };
@@ -150,6 +154,14 @@ const Home: React.FC<RouteComponentProps> = props => {
 
   return (
     <div css={home.outline}>
+      {creationFlowStatus !== CreationFlowStatus.CLOSE && (
+        <CreationFlow
+          creationFlowStatus={creationFlowStatus}
+          setCreationFlowStatus={setCreationFlowStatus}
+          creationParams={creationParams}
+          path="/create"
+        />
+      )}
       <ToolBar toolbarItems={toolbarItems} />
       <div css={home.page}>
         <div css={home.leftPage}>
@@ -166,6 +178,9 @@ const Home: React.FC<RouteComponentProps> = props => {
                 content={formatMessage('New')}
                 styles={home.newBotItem}
                 onClick={() => {
+                  if (props.navigate) {
+                    props.navigate('./create');
+                  }
                   setCreationFlowStatus(CreationFlowStatus.NEW);
                 }}
               />

@@ -13,9 +13,7 @@ export const parseDeepLinkUrl = deeplinkUrl => {
     }
 
     case 'create': {
-      const encodedUrl: string = convertedUrl.search;
-      const decoded = decodeURIComponent(encodedUrl);
-      return `${convertedUrl.pathname}?${decoded}`;
+      return `home/${convertedUrl.hostname}${convertedUrl.search}`;
     }
 
     default:

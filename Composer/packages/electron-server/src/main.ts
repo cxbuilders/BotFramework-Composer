@@ -16,7 +16,7 @@ import { parseDeepLinkUrl } from './utility/url';
 
 const error = log.extend('error');
 const baseUrl = isDevelopment ? 'http://localhost:3000/' : 'http://localhost:5000/';
-let deeplinkingUrl = '';
+let deeplinkUrl = '';
 
 function processArgsForWindows(args: string[]): string {
   if (process.argv.length > 1) {
@@ -62,9 +62,9 @@ async function main() {
     }
 
     if (isWindows()) {
-      deeplinkingUrl = processArgsForWindows(process.argv);
+      deeplinkUrl = processArgsForWindows(process.argv);
     }
-    await mainWindow.webContents.loadURL(baseUrl + deeplinkingUrl);
+    await mainWindow.webContents.loadURL(baseUrl + deeplinkUrl);
 
     mainWindow.maximize();
     mainWindow.show();
@@ -87,12 +87,12 @@ async function run() {
   if (gotTheLock) {
     app.on('second-instance', async (e, argv) => {
       if (isWindows()) {
-        deeplinkingUrl = processArgsForWindows(argv);
+        deeplinkUrl = processArgsForWindows(argv);
       }
 
       const mainWindow = ElectronWindow.getInstance().browserWindow;
       if (mainWindow) {
-        await mainWindow.webContents.loadURL(baseUrl + deeplinkingUrl);
+        await mainWindow.webContents.loadURL(baseUrl + deeplinkUrl);
         if (mainWindow.isMinimized()) {
           mainWindow.restore();
         }
@@ -131,10 +131,10 @@ async function run() {
     // Protocol handler for osx
     app.on('open-url', (event, url) => {
       event.preventDefault();
-      deeplinkingUrl = parseDeepLinkUrl(url);
+      deeplinkUrl = parseDeepLinkUrl(url);
       if (ElectronWindow.isBrowserWindowCreated) {
         const mainWindow = ElectronWindow.getInstance().browserWindow;
-        mainWindow?.loadURL(baseUrl + deeplinkingUrl);
+        mainWindow?.loadURL(baseUrl + deeplinkUrl);
       }
     });
   });
