@@ -6,6 +6,7 @@ import { jsx } from '@emotion/core';
 import React, { Fragment, useContext, useEffect, Suspense } from 'react';
 import { Router, Redirect } from '@reach/router';
 
+import { resolveToBasePath } from './utils/fileUtil';
 import { About } from './pages/about';
 import { data } from './styles';
 import { NotFound } from './components/NotFound';
@@ -41,6 +42,7 @@ const Routes = props => {
             noThrow
           />
           <Redirect from="/bot/:projectId/publish" to="/bot/:projectId/publish/all" noThrow />
+          <Redirect from="/" to={resolveToBasePath(BASEPATH, 'home')} noThrow />
           <ProjectRouter path="/bot/:projectId">
             <SettingPage path="settings/*" />
             <LUPage path="language-understanding/:dialogId/*" />

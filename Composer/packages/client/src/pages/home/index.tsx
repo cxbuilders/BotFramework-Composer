@@ -154,14 +154,6 @@ const Home: React.FC<RouteComponentProps> = props => {
 
   return (
     <div css={home.outline}>
-      <Router>
-        <CreationFlow
-          creationFlowStatus={creationFlowStatus}
-          setCreationFlowStatus={setCreationFlowStatus}
-          creationParams={creationParams}
-          path="/create"
-        />
-      </Router>
       <ToolBar toolbarItems={toolbarItems} />
       <div css={home.page}>
         <div css={home.leftPage}>
