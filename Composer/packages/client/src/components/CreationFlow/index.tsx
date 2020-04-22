@@ -3,11 +3,11 @@
 
 import Path from 'path';
 
-import React, { useState, useEffect, useContext, useRef, Fragment, Suspense } from 'react';
+import React, { useEffect, useContext, useRef, Fragment, Suspense } from 'react';
 import { RouteComponentProps, Router, navigate } from '@reach/router';
 
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { CreationFlowStatus, DialogCreationCopy, Steps } from '../../constants';
+import { CreationFlowStatus } from '../../constants';
 import { StoreContext } from '../../store';
 import Home from '../../pages/home';
 
@@ -15,16 +15,11 @@ import { CreateOptions } from './CreateOptions/index';
 import { OpenProject } from './OpenProject';
 import DefineConversation from './DefineConversation';
 
-interface CreationFlowProps extends RouteComponentProps<{}> {
-  creationFlowStatus?: CreationFlowStatus;
-  setCreationFlowStatus: (status) => void;
-  creationParams?: any;
-}
+type CreationFlowProps = RouteComponentProps<{}>;
 
 const CreationFlow: React.FC<CreationFlowProps> = props => {
-  const [step, setStep] = useState(Steps.NONE);
   const { state, actions } = useContext(StoreContext);
-  const { creationFlowStatus } = props;
+  const { creationFlowStatus } = state;
   const {
     fetchTemplates,
     openBotProject,
@@ -49,34 +44,12 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
   }, [storages]);
 
   const init = async () => {
-    await fetchTemplates();
-    console.log(templateProjects);
-    // load storage system list
-    await fetchStorages();
-
-    switch (creationFlowStatus) {
-      case CreationFlowStatus.NEW:
-        setStep(Steps.CREATE);
-        break;
-      case CreationFlowStatus.OPEN:
-        setStep(Steps.LOCATION);
-        break;
-      case CreationFlowStatus.NEW_FROM_SCRATCH:
-      case CreationFlowStatus.NEW_FROM_TEMPLATE:
-      case CreationFlowStatus.SAVEAS:
-        setStep(Steps.DEFINE);
-        break;
-      default:
-        setStep(Steps.NONE);
-        break;
-    }
+    fetchTemplates();
+    fetchStorages();
   };
 
   useEffect(() => {
-    const fetchTemplatesAndStorage = async () => {
-      await init();
-    };
-    fetchTemplatesAndStorage();
+    init();
   }, []);
 
   const updateCurrentPath = async (newPath, storageId) => {
@@ -91,7 +64,7 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
 
   const handleDismiss = () => {
     setCreationFlowStatus(CreationFlowStatus.CLOSE);
-    navigate(`/`);
+    navigate(`/home`);
   };
 
   const openBot = async botFolder => {
@@ -117,16 +90,12 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
       case CreationFlowStatus.SAVEAS:
         handleSaveAs(formData);
         break;
-      default:
-        setStep(Steps.NONE);
-        break;
     }
     handleDismiss();
   };
 
   const handleCreateNext = data => {
     saveTemplateId(data);
-    setStep(Steps.DEFINE);
     navigate(`./create/template/${templateId}`);
   };
 
@@ -140,7 +109,7 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
             onDismiss={handleDismiss}
             onNext={handleCreateNext}
             saveTemplateId={saveTemplateId}
-            path="/create-bot"
+            path="/createProject"
           />
           <DefineConversation
             onSubmit={handleSubmit}
@@ -148,11 +117,17 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
             onCurrentPathUpdate={updateCurrentPath}
             path="create/template/:templateId"
           />
+          <DefineConversation
+            onSubmit={handleSubmit}
+            onDismiss={handleDismiss}
+            onCurrentPathUpdate={updateCurrentPath}
+            path="/saveProject/:projectId"
+          />
           <OpenProject
             onOpen={openBot}
             onDismiss={handleDismiss}
             onCurrentPathUpdate={updateCurrentPath}
-            path="/open-bot"
+            path="/openProject"
           />
         </Router>
       </Suspense>

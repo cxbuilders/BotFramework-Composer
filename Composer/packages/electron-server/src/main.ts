@@ -8,7 +8,7 @@ import { app } from 'electron';
 import fixPath from 'fix-path';
 
 import { isDevelopment } from './utility/env';
-import { isWindows } from './utility/platform';
+import { isWindows, isMac } from './utility/platform';
 import { getUnpackedAsarPath } from './utility/getUnpackedAsarPath';
 import ElectronWindow from './electronWindow';
 import log from './utility/logger';
@@ -114,7 +114,7 @@ async function run() {
   app.on('window-all-closed', function() {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
+    if (!isMac()) {
       app.quit();
     }
   });

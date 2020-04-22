@@ -90,6 +90,7 @@ const Home: React.FC<RouteComponentProps> = props => {
     }
     saveTemplateId(id);
     setCreationFlowStatus(CreationFlowStatus.NEW_FROM_TEMPLATE, createParams);
+    navigate(`home/create/template/${id}`);
   };
 
   const addButton = <Icon styles={home.button} iconName="Add" />;
@@ -106,7 +107,7 @@ const Home: React.FC<RouteComponentProps> = props => {
         },
         onClick: () => {
           setCreationFlowStatus(CreationFlowStatus.NEW);
-          navigate(`home/create-bot`);
+          navigate(`home/createProject`);
         },
       },
       align: 'left',
@@ -122,7 +123,7 @@ const Home: React.FC<RouteComponentProps> = props => {
         },
         onClick: () => {
           setCreationFlowStatus(CreationFlowStatus.OPEN);
-          navigate(`home/open-bot`);
+          navigate(`home/openProject`);
         },
       },
       align: 'left',
@@ -138,6 +139,7 @@ const Home: React.FC<RouteComponentProps> = props => {
         },
         onClick: () => {
           setCreationFlowStatus(CreationFlowStatus.SAVEAS);
+          navigate(`./home/saveProject/${state.projectId}`);
         },
       },
       align: 'left',
@@ -177,7 +179,7 @@ const Home: React.FC<RouteComponentProps> = props => {
                 styles={home.newBotItem}
                 onClick={() => {
                   setCreationFlowStatus(CreationFlowStatus.NEW);
-                  navigate('./home/create-bot');
+                  navigate('./home/createProject');
                 }}
               />
             </div>
