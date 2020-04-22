@@ -10,7 +10,9 @@ import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button'
 import { Stack, StackItem } from 'office-ui-fabric-react/lib/Stack';
 import React, { useState, Fragment, useEffect, useContext } from 'react';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
+import { RouteComponentProps } from '@reach/router';
 
+import { CreateDialog } from '../ModalDialog';
 import { LocationSelectContent } from '../LocationBrowser/LocationSelectContent';
 import { styles as wizardStyles } from '../StepWizard/styles';
 import { StoreContext } from '../../../store';
@@ -30,7 +32,7 @@ interface FormDataError {
   location?: string;
 }
 
-interface DefineConversationProps {
+interface DefineConversationProps extends RouteComponentProps<{}> {
   onSubmit: (formData: FormData) => void;
   onDismiss: () => void;
   onCurrentPathUpdate: (newPath?: string, storageId?: string) => void;
@@ -40,7 +42,8 @@ interface DefineConversationProps {
 
 const initialFormDataError: FormDataError = {};
 
-export const DefineConversation: React.FC<DefineConversationProps> = props => {
+const DefineConversation: React.FC<DefineConversationProps> = props => {
+  console.log('DAMN U');
   const { onSubmit, onDismiss, onCurrentPathUpdate } = props;
   const { state } = useContext(StoreContext);
   const { templateId, focusedStorageFolder } = state;
@@ -145,39 +148,46 @@ export const DefineConversation: React.FC<DefineConversationProps> = props => {
 
   return (
     <Fragment>
-      <form onSubmit={handleSubmit}>
-        <input type="submit" style={{ display: 'none' }} />
-        <Stack horizontal={true} tokens={{ childrenGap: '2rem' }} styles={wizardStyles.stackinput}>
-          <StackItem grow={0} styles={wizardStyles.halfstack}>
-            <TextField
-              label={formatMessage('Name')}
-              value={formData.name}
-              styles={name}
-              onChange={updateForm('name')}
-              errorMessage={formDataErrors.name}
-              data-testid="NewDialogName"
-              required
-              autoFocus
-            />
-          </StackItem>
-          <StackItem grow={0} styles={wizardStyles.halfstack}>
-            <TextField
-              styles={description}
-              value={formData.description}
-              label={formatMessage('Description')}
-              multiline
-              resizable={false}
-              onChange={updateForm('description')}
-            />
-          </StackItem>
-        </Stack>
-        <LocationSelectContent operationMode={{ read: true, write: true }} onCurrentPathUpdate={onCurrentPathUpdate} />
+      <CreateDialog title="Conversation Objective and shit" subText="Hell hole" onDismiss={onDismiss}>
+        <form onSubmit={handleSubmit}>
+          <input type="submit" style={{ display: 'none' }} />
+          <Stack horizontal={true} tokens={{ childrenGap: '2rem' }} styles={wizardStyles.stackinput}>
+            <StackItem grow={0} styles={wizardStyles.halfstack}>
+              <TextField
+                label={formatMessage('Name')}
+                value={formData.name}
+                styles={name}
+                onChange={updateForm('name')}
+                errorMessage={formDataErrors.name}
+                data-testid="NewDialogName"
+                required
+                autoFocus
+              />
+            </StackItem>
+            <StackItem grow={0} styles={wizardStyles.halfstack}>
+              <TextField
+                styles={description}
+                value={formData.description}
+                label={formatMessage('Description')}
+                multiline
+                resizable={false}
+                onChange={updateForm('description')}
+              />
+            </StackItem>
+          </Stack>
+          <LocationSelectContent
+            operationMode={{ read: true, write: true }}
+            onCurrentPathUpdate={onCurrentPathUpdate}
+          />
 
-        <DialogFooter>
-          <DefaultButton onClick={onDismiss} text={formatMessage('Cancel')} />
-          <PrimaryButton onClick={handleSubmit} text={formatMessage('Next')} disabled={disable} />
-        </DialogFooter>
-      </form>
+          <DialogFooter>
+            <DefaultButton onClick={onDismiss} text={formatMessage('Cancel')} />
+            <PrimaryButton onClick={handleSubmit} text={formatMessage('Next')} disabled={disable} />
+          </DialogFooter>
+        </form>
+      </CreateDialog>
     </Fragment>
   );
 };
+
+export default DefineConversation;

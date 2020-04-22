@@ -21,7 +21,7 @@ const SettingPage = React.lazy(() => import('./pages/setting'));
 const Notifications = React.lazy(() => import('./pages/notifications'));
 const Publish = React.lazy(() => import('./pages/publish'));
 const Skills = React.lazy(() => import('./pages/skills'));
-const CreationFlow = React.lazy(() => import('./components/CreationFlow'));
+const CreateFlowRouter = React.lazy(() => import('./components/CreationFlow/index'));
 
 const Routes = props => {
   return (
@@ -49,7 +49,7 @@ const Routes = props => {
             <Publish path="publish/:targetName" />
             <Skills path="skills/*" />
           </ProjectRouter>
-          <CreateTemplateRouter path="/create/*"></CreateTemplateRouter>
+          <CreateFlowRouter path="/home/*"></CreateFlowRouter>
           <Home path="/" />
           <About path="about" />
           <NotFound default />
@@ -82,19 +82,6 @@ const ProjectRouter = props => {
   }, []);
 
   return <Fragment>{props.children}</Fragment>;
-};
-
-const CreateTemplateRouter = props => {
-  return (
-    <Fragment>
-      <Home />
-      <Router>
-        <DashboardHome path="/" />
-        <Team path="team" />
-        <Projects path="projects" />
-      </Router>
-    </Fragment>
-  );
 };
 
 export default Routes;
