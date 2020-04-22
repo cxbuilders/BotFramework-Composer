@@ -8,6 +8,7 @@ import formatMessage from 'format-message';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { RouteComponentProps, Router } from '@reach/router';
+import { navigate } from '@reach/router';
 
 import { StoreContext } from '../../store';
 import { CreationFlowStatus } from '../../constants';
@@ -103,7 +104,10 @@ const Home: React.FC<RouteComponentProps> = props => {
         iconProps: {
           iconName: 'CirclePlus',
         },
-        onClick: () => setCreationFlowStatus(CreationFlowStatus.NEW),
+        onClick: () => {
+          setCreationFlowStatus(CreationFlowStatus.NEW);
+          navigate(`home/create-bot`);
+        },
       },
       align: 'left',
       dataTestid: 'homePage-ToolBar-New',
@@ -116,7 +120,10 @@ const Home: React.FC<RouteComponentProps> = props => {
         iconProps: {
           iconName: 'OpenFolderHorizontal',
         },
-        onClick: () => setCreationFlowStatus(CreationFlowStatus.OPEN),
+        onClick: () => {
+          setCreationFlowStatus(CreationFlowStatus.OPEN);
+          navigate(`home/open-bot`);
+        },
       },
       align: 'left',
       dataTestid: 'homePage-ToolBar-Open',
@@ -129,7 +136,9 @@ const Home: React.FC<RouteComponentProps> = props => {
         iconProps: {
           iconName: 'Save',
         },
-        onClick: () => setCreationFlowStatus(CreationFlowStatus.SAVEAS),
+        onClick: () => {
+          setCreationFlowStatus(CreationFlowStatus.SAVEAS);
+        },
       },
       align: 'left',
       disabled: botName ? false : true,
@@ -167,10 +176,8 @@ const Home: React.FC<RouteComponentProps> = props => {
                 content={formatMessage('New')}
                 styles={home.newBotItem}
                 onClick={() => {
-                  if (props.navigate) {
-                    props.navigate('./create');
-                  }
                   setCreationFlowStatus(CreationFlowStatus.NEW);
+                  navigate('./home/create-bot');
                 }}
               />
             </div>

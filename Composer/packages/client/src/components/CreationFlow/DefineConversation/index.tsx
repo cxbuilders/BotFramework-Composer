@@ -12,6 +12,7 @@ import React, { useState, Fragment, useEffect, useContext } from 'react';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { RouteComponentProps } from '@reach/router';
 
+import { DialogCreationCopy } from '../../../constants';
 import { CreateDialog } from '../ModalDialog';
 import { LocationSelectContent } from '../LocationBrowser/LocationSelectContent';
 import { styles as wizardStyles } from '../StepWizard/styles';
@@ -37,13 +38,11 @@ interface DefineConversationProps extends RouteComponentProps<{}> {
   onDismiss: () => void;
   onCurrentPathUpdate: (newPath?: string, storageId?: string) => void;
   onGetErrorMessage?: (text: string) => void;
-  creationParams: { [key: string]: string };
 }
 
 const initialFormDataError: FormDataError = {};
 
 const DefineConversation: React.FC<DefineConversationProps> = props => {
-  console.log('DAMN U');
   const { onSubmit, onDismiss, onCurrentPathUpdate } = props;
   const { state } = useContext(StoreContext);
   const { templateId, focusedStorageFolder } = state;
@@ -117,21 +116,27 @@ const DefineConversation: React.FC<DefineConversationProps> = props => {
   }, [focusedStorageFolder, formData.name]);
 
   useEffect(() => {
-    if (props.creationParams) {
-      const updatedFormData: FormData = { ...formData };
-      if (props.creationParams.name) {
-        updatedFormData.name = props.creationParams.name;
-      }
-      if (props.creationParams.description) {
-        updatedFormData.description = props.creationParams.description;
-      }
+    let creationParams = props.location?.search;
+    if (creationParams) {
+      creationParams = decodeURIComponent(creationParams);
+      const decodedUrl = new URLSearchParams(creationParams);
 
-      if (props.creationParams.schemaUrl) {
-        updatedFormData.schemaUrl = props.creationParams.schemaUrl;
+      const updatedFormData: FormData = { ...formData };
+      const name = decodedUrl.get('name');
+      if (name) {
+        updatedFormData.name = name;
+      }
+      const description = decodedUrl.get('description');
+      if (description) {
+        updatedFormData.description = description;
+      }
+      const schemaUrl = decodedUrl.get('schemaUrl');
+      if (schemaUrl) {
+        updatedFormData.schemaUrl = schemaUrl;
       }
       setFormData(updatedFormData);
     }
-  }, [props.creationParams]);
+  }, []);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -148,7 +153,7 @@ const DefineConversation: React.FC<DefineConversationProps> = props => {
 
   return (
     <Fragment>
-      <CreateDialog title="Conversation Objective and shit" subText="Hell hole" onDismiss={onDismiss}>
+      <CreateDialog {...DialogCreationCopy.DEFINE_CONVERSATION_OBJECTIVE} onDismiss={onDismiss}>
         <form onSubmit={handleSubmit}>
           <input type="submit" style={{ display: 'none' }} />
           <Stack horizontal={true} tokens={{ childrenGap: '2rem' }} styles={wizardStyles.stackinput}>

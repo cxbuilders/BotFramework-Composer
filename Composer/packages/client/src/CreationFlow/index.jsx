@@ -3,28 +3,22 @@
 
 import Path from 'path';
 
-import React, { useState, useEffect, useContext, useRef, Fragment, Suspense } from 'react';
-import { RouteComponentProps, Router, navigate } from '@reach/router';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 
-import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { CreationFlowStatus, DialogCreationCopy, Steps } from '../../constants';
-import { StoreContext } from '../../store';
-import Home from '../../pages/home';
+import { CreationFlowStatus, DialogCreationCopy, Steps } from '../constants';
 
 import { CreateOptions } from './CreateOptions/index';
+import { DefineConversation } from './DefineConversation/index';
 import { OpenProject } from './OpenProject';
-import DefineConversation from './DefineConversation';
+import { StoreContext } from './../store';
+import { StepWizard } from './StepWizard/StepWizard';
+import { navigateTo } from './../utils/navigation';
 
-interface CreationFlowProps extends RouteComponentProps<{}> {
-  creationFlowStatus?: CreationFlowStatus;
-  setCreationFlowStatus: (status) => void;
-  creationParams?: any;
-}
-
-const CreationFlow: React.FC<CreationFlowProps> = props => {
-  const [step, setStep] = useState(Steps.NONE);
+export function CreationFlow(props) {
   const { state, actions } = useContext(StoreContext);
-  const { creationFlowStatus } = props;
+  const [step, setStep] = useState();
+  // eslint-disable-next-line react/prop-types
+  const { creationFlowStatus, setCreationFlowStatus } = props;
   const {
     fetchTemplates,
     openBotProject,
@@ -33,7 +27,6 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
     saveTemplateId,
     fetchStorages,
     fetchFolderItemsByPath,
-    setCreationFlowStatus,
   } = actions;
   const { templateId, templateProjects, storages } = state;
   const currentStorageIndex = useRef(0);
@@ -48,11 +41,15 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
     }
   }, [storages]);
 
-  const init = async () => {
-    await fetchTemplates();
-    console.log(templateProjects);
+  useEffect(() => {
+    init();
+  }, [creationFlowStatus]);
+
+  const init = () => {
+    fetchTemplates();
+    console.log('Templates', templateProjects);
     // load storage system list
-    await fetchStorages();
+    fetchStorages();
 
     switch (creationFlowStatus) {
       case CreationFlowStatus.NEW:
@@ -72,13 +69,6 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
     }
   };
 
-  useEffect(() => {
-    const fetchTemplatesAndStorage = async () => {
-      await init();
-    };
-    fetchTemplatesAndStorage();
-  }, []);
-
   const updateCurrentPath = async (newPath, storageId) => {
     if (!storageId) {
       storageId = currentStorageId;
@@ -91,7 +81,6 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
 
   const handleDismiss = () => {
     setCreationFlowStatus(CreationFlowStatus.CLOSE);
-    navigate(`/`);
   };
 
   const openBot = async botFolder => {
@@ -100,7 +89,7 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
   };
 
   const handleCreateNew = async formData => {
-    await createProject(templateId || '', formData.name, formData.description, formData.location, formData.schemaUrl);
+    await createProject(templateId || '', formData.name, formData.description, formData.location);
   };
 
   const handleSaveAs = async formData => {
@@ -127,37 +116,31 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
   const handleCreateNext = data => {
     saveTemplateId(data);
     setStep(Steps.DEFINE);
-    navigate(`./create/template/${templateId}`);
   };
 
-  return (
-    <Fragment>
-      <Home />
-      <Suspense fallback={<LoadingSpinner />}>
-        <Router>
-          <CreateOptions
-            templates={templateProjects}
-            onDismiss={handleDismiss}
-            onNext={handleCreateNext}
-            saveTemplateId={saveTemplateId}
-            path="/create-bot"
-          />
-          <DefineConversation
-            onSubmit={handleSubmit}
-            onDismiss={handleDismiss}
-            onCurrentPathUpdate={updateCurrentPath}
-            path="create/template/:templateId"
-          />
-          <OpenProject
-            onOpen={openBot}
-            onDismiss={handleDismiss}
-            onCurrentPathUpdate={updateCurrentPath}
-            path="/open-bot"
-          />
-        </Router>
-      </Suspense>
-    </Fragment>
-  );
-};
+  const steps = {
+    [Steps.CREATE]: {
+      ...DialogCreationCopy.CREATE_NEW_BOT,
+      children: (
+        <CreateOptions
+          templates={templateProjects}
+          onDismiss={handleDismiss}
+          onNext={handleCreateNext}
+          saveTemplateId={saveTemplateId}
+        />
+      ),
+    },
+    [Steps.LOCATION]: {
+      ...DialogCreationCopy.SELECT_LOCATION,
+      children: <OpenProject onOpen={openBot} onDismiss={handleDismiss} onCurrentPathUpdate={updateCurrentPath} />,
+    },
+    [Steps.DEFINE]: {
+      ...DialogCreationCopy.DEFINE_CONVERSATION_OBJECTIVE,
+      children: (
+        <DefineConversation onSubmit={handleSubmit} onDismiss={handleDismiss} onCurrentPathUpdate={updateCurrentPath} />
+      ),
+    },
+  };
 
-export default CreationFlow;
+  return <StepWizard steps={steps} step={step} onDismiss={handleDismiss} />;
+}
