@@ -66,12 +66,12 @@ export function SelectLocation(props) {
             styles: option,
           };
         })}
-        onChange={(e, option) => {
+        onChange={(e, option: any) => {
           setErrorMessage('');
           setSelected(option.path);
         }}
         required={true}
-        styles={choice}
+        styles={choice as any}
         data-testid="SelectLocation"
       />
       <DialogFooter>

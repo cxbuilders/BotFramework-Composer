@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 import { FontWeights } from '@uifabric/styling';
-import { FontSizes } from '@uifabric/fluent-theme';
 
 export const textFieldlabel = {
   label: {

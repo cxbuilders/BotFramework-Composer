@@ -14,7 +14,8 @@ import ElectronWindow from './electronWindow';
 import log from './utility/logger';
 import { parseDeepLinkUrl } from './utility/url';
 
-const error = log.extend('error');
+//const error = log.extend('error');
+const error = log;
 const baseUrl = isDevelopment ? 'http://localhost:3000/' : 'http://localhost:5000/';
 let deeplinkUrl = '';
 
@@ -64,6 +65,8 @@ async function main() {
     if (isWindows()) {
       deeplinkUrl = processArgsForWindows(process.argv);
     }
+
+    log(`Loading ${baseUrl + deeplinkUrl}`);
     await mainWindow.webContents.loadURL(baseUrl + deeplinkUrl);
 
     mainWindow.maximize();
@@ -76,11 +79,7 @@ async function main() {
 }
 
 async function run() {
-  fixPath(); // required PATH fix for Mac (https://github.com/electron/electron/issues/5626)
-
-  if (isDevelopment && !app.isDefaultProtocolClient('bfcomposer')) {
-    app.setAsDefaultProtocolClient('bfcomposer');
-  }
+  fixPath(); // required PATH fix for Mac (https://github.com/electron/electron/issues/5626)\
 
   // Force Single Instance Application
   const gotTheLock = app.requestSingleInstanceLock();
@@ -88,6 +87,7 @@ async function run() {
     app.on('second-instance', async (e, argv) => {
       if (isWindows()) {
         deeplinkUrl = processArgsForWindows(argv);
+        log(`Deep link to ${deeplinkUrl}`);
       }
 
       const mainWindow = ElectronWindow.getInstance().browserWindow;
@@ -134,6 +134,7 @@ async function run() {
       deeplinkUrl = parseDeepLinkUrl(url);
       if (ElectronWindow.isBrowserWindowCreated) {
         const mainWindow = ElectronWindow.getInstance().browserWindow;
+        log(`Loading ${baseUrl + deeplinkUrl}`);
         mainWindow?.loadURL(baseUrl + deeplinkUrl);
       }
     });

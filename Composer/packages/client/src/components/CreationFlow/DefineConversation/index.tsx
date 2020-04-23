@@ -33,7 +33,11 @@ interface FormDataError {
   location?: string;
 }
 
-interface DefineConversationProps extends RouteComponentProps<{}> {
+interface DefineConversationProps
+  extends RouteComponentProps<{
+    templateId: string;
+    location: string;
+  }> {
   onSubmit: (formData: FormData) => void;
   onDismiss: () => void;
   onCurrentPathUpdate: (newPath?: string, storageId?: string) => void;
@@ -44,9 +48,10 @@ const initialFormDataError: FormDataError = {};
 
 const DefineConversation: React.FC<DefineConversationProps> = props => {
   const { onSubmit, onDismiss, onCurrentPathUpdate } = props;
-  const { state } = useContext(StoreContext);
+  const { state, actions } = useContext(StoreContext);
   const { templateId, focusedStorageFolder } = state;
   const files = get(focusedStorageFolder, 'children', []);
+  const { saveTemplateId } = actions;
   const getDefaultName = () => {
     let i = -1;
     const bot = templateId;
@@ -116,27 +121,34 @@ const DefineConversation: React.FC<DefineConversationProps> = props => {
   }, [focusedStorageFolder, formData.name]);
 
   useEffect(() => {
-    let creationParams = props.location?.search;
-    if (creationParams) {
-      creationParams = decodeURIComponent(creationParams);
-      const decodedUrl = new URLSearchParams(creationParams);
+    saveTemplateId(props.templateId);
+  }, []);
 
-      const updatedFormData: FormData = { ...formData };
-      const name = decodedUrl.get('name');
-      if (name) {
-        updatedFormData.name = name;
-      }
-      const description = decodedUrl.get('description');
+  useEffect(() => {
+    const updatedFormData = {
+      ...formData,
+    };
+    if (props.location?.search) {
+      const urlSearchParams = new URLSearchParams(decodeURIComponent(props.location.search));
+      const description = urlSearchParams.get('description');
       if (description) {
         updatedFormData.description = description;
       }
-      const schemaUrl = decodedUrl.get('schemaUrl');
+
+      const schemaUrl = urlSearchParams.get('schemaUrl');
       if (schemaUrl) {
         updatedFormData.schemaUrl = schemaUrl;
       }
-      setFormData(updatedFormData);
+
+      const name: string | null = urlSearchParams.get('name');
+      if (name) {
+        updatedFormData.name = name;
+      } else {
+        updatedFormData.name = getDefaultName();
+      }
     }
-  }, []);
+    setFormData(updatedFormData);
+  }, [templateId]);
 
   const handleSubmit = e => {
     e.preventDefault();

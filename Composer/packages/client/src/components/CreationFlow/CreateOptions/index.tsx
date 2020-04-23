@@ -3,7 +3,7 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment, useEffect, useMemo } from 'react';
 import formatMessage from 'format-message';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
@@ -19,6 +19,7 @@ import {
   DetailsRow,
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { Sticky, StickyPositionType } from 'office-ui-fabric-react/lib/Sticky';
+import { ProjectTemplate } from '@bfc/shared';
 
 import { DialogCreationCopy } from '../../../constants';
 import { CreateDialog } from '../ModalDialog';
@@ -36,14 +37,17 @@ export function CreateOptions(props) {
   const { templates, onDismiss, onNext } = props;
   const [template, setTemplate] = useState('');
   const [emptyBotKey, setEmptyBotKey] = useState('');
-  const selection = new Selection({
-    onSelectionChanged: () => {
-      const t = selection.getSelection()[0];
-      if (t) {
-        setTemplate(t.id);
-      }
-    },
-  });
+
+  const selection = useMemo(() => {
+    return new Selection({
+      onSelectionChanged: () => {
+        const t = selection.getSelection()[0] as ProjectTemplate;
+        if (t) {
+          setTemplate(t.id);
+        }
+      },
+    });
+  }, [templates]);
 
   function SelectOption(props) {
     const { checked, text, key } = props;
@@ -131,28 +135,30 @@ export function CreateOptions(props) {
     }
   }, [templates]);
 
+  const choiceOptions = [
+    {
+      ariaLabel: 'Create from scratch' + (option === optionKeys.createFromScratch ? ' selected' : ''),
+      key: optionKeys.createFromScratch,
+      'data-testid': 'Create from scratch',
+      text: formatMessage('Create from scratch'),
+      onRenderField: SelectOption,
+    },
+    {
+      ariaLabel: 'Create from template' + (option === optionKeys.createFromTemplate ? ' selected' : ''),
+      key: optionKeys.createFromTemplate,
+      'data-testid': 'Create from template',
+      text: formatMessage('Create from template'),
+      onRenderField: SelectOption,
+    },
+  ];
+
   return (
     <Fragment>
       <CreateDialog {...DialogCreationCopy.CREATE_NEW_BOT} onDismiss={onDismiss}>
         <ChoiceGroup
           label={formatMessage('Choose how to create your bot')}
           selectedKey={option}
-          options={[
-            {
-              ariaLabel: 'Create from scratch' + (option === optionKeys.createFromScratch ? ' selected' : ''),
-              key: optionKeys.createFromScratch,
-              'data-testid': 'Create from scratch',
-              text: formatMessage('Create from scratch'),
-              onRenderField: SelectOption,
-            },
-            {
-              ariaLabel: 'Create from template' + (option === optionKeys.createFromTemplate ? ' selected' : ''),
-              key: optionKeys.createFromTemplate,
-              'data-testid': 'Create from template',
-              text: formatMessage('Create from template'),
-              onRenderField: SelectOption,
-            },
-          ]}
+          options={choiceOptions}
           onChange={handleChange}
         />
         <h3 css={listHeader}>{formatMessage('Examples')}</h3>

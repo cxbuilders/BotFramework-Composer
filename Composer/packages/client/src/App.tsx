@@ -126,7 +126,7 @@ const bottomLinks = [
 ];
 
 export const App: React.FC = () => {
-  const { state, actions } = useContext(StoreContext);
+  const { state } = useContext(StoreContext);
   const [sideBarExpand, setSideBarExpand] = useState(false);
 
   const { botName, projectId, dialogs, locale, designPageLocation, announcement } = state;

@@ -7,21 +7,17 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import formatMessage from 'format-message';
 import { Link } from 'office-ui-fabric-react/lib/Link';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { RouteComponentProps, Router } from '@reach/router';
+import { RouteComponentProps } from '@reach/router';
 import { navigate } from '@reach/router';
 
 import { StoreContext } from '../../store';
 import { CreationFlowStatus } from '../../constants';
 import { ToolBar } from '../../components/ToolBar/index';
-import CreationFlow from '../../components/CreationFlow';
 
 import * as home from './styles';
 import { ItemContainer } from './ItemContainer';
 import { RecentBotList } from './RecentBotList';
 import { ExampleList } from './ExampleList';
-
-const creationParams = {};
-
 const linksButtom = [
   {
     to: 'https://aka.ms/BF-Composer-Getting-Started',
@@ -52,9 +48,9 @@ const turtorials = [
   },
 ];
 
-const Home: React.FC<RouteComponentProps> = props => {
+const Home: React.FC<RouteComponentProps> = () => {
   const { state, actions } = useContext(StoreContext);
-  const { botName, recentProjects, templateProjects, creationFlowStatus } = state;
+  const { botName, recentProjects, templateProjects } = state;
   const {
     openBotProject,
     setCreationFlowStatus,

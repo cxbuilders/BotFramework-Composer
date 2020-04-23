@@ -22,7 +22,7 @@ const SettingPage = React.lazy(() => import('./pages/setting'));
 const Notifications = React.lazy(() => import('./pages/notifications'));
 const Publish = React.lazy(() => import('./pages/publish'));
 const Skills = React.lazy(() => import('./pages/skills'));
-const CreateFlowRouter = React.lazy(() => import('./components/CreationFlow/index'));
+const BotCreationFlowRouter = React.lazy(() => import('./components/CreationFlow/index'));
 
 const Routes = props => {
   return (
@@ -51,7 +51,7 @@ const Routes = props => {
             <Publish path="publish/:targetName" />
             <Skills path="skills/*" />
           </ProjectRouter>
-          <CreateFlowRouter path="/home/*"></CreateFlowRouter>
+          <BotCreationFlowRouter path="/home/*"></BotCreationFlowRouter>
           <Home path="/" />
           <About path="about" />
           <NotFound default />

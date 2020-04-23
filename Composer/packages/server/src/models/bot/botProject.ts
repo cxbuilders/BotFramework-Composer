@@ -193,7 +193,7 @@ export class BotProject {
       fs.mkdirSync(pathToSchema);
       response.data.pipe(fs.createWriteStream(`${pathToSchema}/sdk.schema`));
     } catch (ex) {
-      console.error('Failed to download the schema', ex);
+      throw new Error('Schema file could not be downloaded. Please check the url to the schema.');
     }
   }
 

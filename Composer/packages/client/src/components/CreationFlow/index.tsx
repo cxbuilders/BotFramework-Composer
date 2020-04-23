@@ -84,19 +84,20 @@ const CreationFlow: React.FC<CreationFlowProps> = props => {
     switch (creationFlowStatus) {
       case CreationFlowStatus.NEW_FROM_SCRATCH:
       case CreationFlowStatus.NEW_FROM_TEMPLATE:
-      case CreationFlowStatus.NEW:
         handleCreateNew(formData);
         break;
       case CreationFlowStatus.SAVEAS:
         handleSaveAs(formData);
         break;
+
+      default:
+        handleCreateNew(formData);
     }
     handleDismiss();
   };
 
   const handleCreateNext = data => {
-    saveTemplateId(data);
-    navigate(`./create/template/${templateId}`);
+    navigate(`./create/template/${data}`);
   };
 
   return (

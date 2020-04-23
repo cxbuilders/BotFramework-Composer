@@ -11,12 +11,11 @@ import { navTo } from './navigation';
 import settingStorage from './../../utils/dialogSettingStorage';
 import httpClient from './../../utils/httpUtil';
 
-export const setCreationFlowStatus: ActionCreator = ({ dispatch }, creationFlowStatus, creationParams = undefined) => {
+export const setCreationFlowStatus: ActionCreator = ({ dispatch }, creationFlowStatus) => {
   dispatch({
     type: ActionTypes.SET_CREATION_FLOW_STATUS,
     payload: {
       creationFlowStatus,
-      creationParams,
     },
   });
 };
@@ -47,9 +46,9 @@ export const fetchProjectById: ActionCreator = async (store, projectId) => {
       },
     });
     return response.data;
-  } catch (err) {
+  } catch (error) {
     navigateTo('/home');
-    store.dispatch({ type: ActionTypes.GET_PROJECT_FAILURE, payload: { error: err } });
+    store.dispatch({ type: ActionTypes.GET_PROJECT_FAILURE, payload: { error } });
   }
 };
 
@@ -68,8 +67,13 @@ export const fetchRecentProjects: ActionCreator = async ({ dispatch }) => {
         response,
       },
     });
-  } catch (err) {
-    dispatch({ type: ActionTypes.GET_RECENT_PROJECTS_FAILURE, payload: null, error: err });
+  } catch (error) {
+    dispatch({
+      type: ActionTypes.GET_RECENT_PROJECTS_FAILURE,
+      payload: {
+        error,
+      },
+    });
   }
 };
 
@@ -135,8 +139,13 @@ export const saveProjectAs: ActionCreator = async (store, projectId, name, descr
       const mainUrl = `/bot/${newProjectId}/dialogs/Main`;
       navigateTo(mainUrl);
     }
-  } catch (err) {
-    store.dispatch({ type: ActionTypes.GET_PROJECT_FAILURE, payload: null, error: err });
+  } catch (error) {
+    store.dispatch({
+      type: ActionTypes.GET_PROJECT_FAILURE,
+      payload: {
+        error,
+      },
+    });
   }
 };
 
@@ -173,8 +182,13 @@ export const createProject: ActionCreator = async (
       navTo(store, 'Main');
     }
     return response.data;
-  } catch (err) {
-    store.dispatch({ type: ActionTypes.GET_PROJECT_FAILURE, payload: null, error: err });
+  } catch (error) {
+    store.dispatch({
+      type: ActionTypes.GET_PROJECT_FAILURE,
+      payload: {
+        error,
+      },
+    });
   }
 };
 

@@ -7,7 +7,7 @@ import React from 'react';
 import { styles } from '../StepWizard/styles';
 
 export function CreateDialog(props) {
-  const { title, subText, onDismiss, isHidden } = props;
+  const { title, subText, onDismiss } = props;
   return (
     <Dialog
       hidden={false}

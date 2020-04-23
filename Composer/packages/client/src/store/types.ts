@@ -5,7 +5,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { PromptTab, BotSchemas, ProjectTemplate, DialogInfo, LgFile, LuFile, Skill, UserSettings } from '@bfc/shared';
-import { string } from 'prop-types';
 
 import { CreationFlowStatus, BotStatus } from '../constants';
 
@@ -82,7 +81,6 @@ export interface State {
   botStatus: BotStatus;
   botLoadErrorMsg: { title: string; message: string };
   creationFlowStatus: CreationFlowStatus;
-  creationParams: { [key: string]: string };
   templateId: string;
   storageFileLoadingStatus: string;
   schemas: BotSchemas;
